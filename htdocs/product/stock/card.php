@@ -658,7 +658,8 @@ if ($action == 'create') {
 				$sql = "";
 			}
 			$sql .= $hookmanager->resPrint;
-			$sql .= " FROM ".MAIN_DB_PREFIX."product_stock as ps, ".MAIN_DB_PREFIX."product as p";
+			$sql .= ", e.fk_parent";
+			$sql .= " FROM ".MAIN_DB_PREFIX."product_stock as ps, ".MAIN_DB_PREFIX."entrepot as e, ".MAIN_DB_PREFIX."product as p";
 
 			if ($separatedPMP) {
 				$sql .= ", ".MAIN_DB_PREFIX."product_perentity as pa";
@@ -666,7 +667,7 @@ if ($action == 'create') {
 
 			$sql .= " WHERE ps.fk_product = p.rowid";
 			$sql .= " AND ps.reel <> 0"; // We do not show if stock is 0 (no product in this warehouse)
-			$sql .= " AND ps.fk_entrepot = ".((int) $object->id);
+			$sql .= " AND (ps.fk_entrepot = ".((int) $object->id)." OR e.fk_parent = ".((int) $object->id).")";
 
 			if ($separatedPMP) {
 				$sql .= " AND pa.fk_product = p.rowid AND pa.entity = ".(int) $conf->entity;
